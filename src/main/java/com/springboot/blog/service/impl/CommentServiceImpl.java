@@ -5,9 +5,12 @@ import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.payload.CommentDTO;
 import com.springboot.blog.repository.PostRepository;
-import com.springboot.blog.service.CommentRepository;
+import com.springboot.blog.repository.CommentRepository;
 import com.springboot.blog.service.CommentService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -38,6 +41,14 @@ public class CommentServiceImpl implements CommentService {
         return mapToDTO(newComment);
 
 
+    }
+
+    @Override
+    public List<CommentDTO> getCommentsByPostId(long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        // return comments.stream().map(comment -> mapToDTO(comment)).collect(Collectors.toList()); without method reference
+        // using method reference
+        return comments.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     private CommentDTO mapToDTO(Comment comment) {
