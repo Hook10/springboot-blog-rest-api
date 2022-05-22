@@ -1,18 +1,14 @@
 package com.springboot.blog.controller;
 
 import com.springboot.blog.payload.PostDTO;
-import com.springboot.blog.payload.PostDTOV2;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.springboot.blog.utils.AppConstants.*;
 
@@ -44,26 +40,11 @@ public class PostController {
         return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
 
-    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.java.v1+json")
+    @GetMapping(value = "/api/v1/posts/{id}")
     public ResponseEntity<PostDTO> getPostByIdV1(@PathVariable("id") long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
-    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.java.v2+json")
-    public ResponseEntity<PostDTOV2> getPostByIdV2(@PathVariable("id") long id) {
-        PostDTO postDTO = postService.getPostById(id);
-        PostDTOV2 postDTOV2 = new PostDTOV2();
-        postDTOV2.setId(postDTO.getId());
-        postDTOV2.setTitle(postDTO.getTitle());
-        postDTOV2.setDescription(postDTO.getDescription());
-        postDTOV2.setContent(postDTO.getContent());
-        List<String> tags = new ArrayList<>();
-        tags.add("Java");
-        tags.add("Spring Boot");
-        tags.add("AWS");
-        postDTOV2.setTags(tags);
-        return ResponseEntity.ok(postDTOV2);
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     //update post by id rest api
